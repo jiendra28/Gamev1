@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Very Important Question ❤️</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: #ffe6f0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 40px;
+            color: #ff4d88;
+            margin-bottom: 40px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        button {
+            border: none;
+            padding: 15px 35px;
+            font-size: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        #yes {
+            background: #ff4d88;
+            color: white;
+        }
+
+        #no {
+            background: #555;
+            color: white;
+            position: fixed;
+        }
+
+        #message {
+            display: none;
+            font-size: 30px;
+            color: #ff4d88;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" id="question">
+        <h1>Do you love me? ❤️</h1>
+
+        <div class="buttons">
+            <button id="yes">YES ❤️</button>
+            <button id="no">NO 😭</button>
+        </div>
+    </div>
+
+    <div id="message">
+        <h1>I KNEW IT!!! ❤️🥰</h1>
+        <p>You can't escape me now 😏</p>
+    </div>
+
+    <script>
+        const noButton = document.getElementById("no");
+        const yesButton = document.getElementById("yes");
+
+        // Move the NO button whenever the mouse gets close
+        noButton.addEventListener("mouseenter", moveButton);
+
+        function moveButton() {
+            const buttonWidth = noButton.offsetWidth;
+            const buttonHeight = noButton.offsetHeight;
+
+            const maxX = window.innerWidth - buttonWidth - 20;
+            const maxY = window.innerHeight - buttonHeight - 20;
+
+            const randomX = Math.random() * maxX + 10;
+            const randomY = Math.random() * maxY + 10;
+
+            noButton.style.left = randomX + "px";
+            noButton.style.top = randomY + "px";
+        }
+
+        // YES button
+        yesButton.addEventListener("click", function () {
+            document.getElementById("question").style.display = "none";
+            document.getElementById("message").style.display = "block";
+        });
+    </script>
+
+</body>
+</html>
