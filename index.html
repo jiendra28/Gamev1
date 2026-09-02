@@ -47,11 +47,13 @@
         }
 
         #no {
-            background: #555;
-            color: white;
-            position: fixed;
+        background: #555;
+        color: white;
+        position: fixed;
+        touch-action: none;
+        user-select: none;
         }
-
+        
         #message {
             display: none;
             font-size: 30px;
@@ -77,32 +79,53 @@
     </div>
 
     <script>
-        const noButton = document.getElementById("no");
-        const yesButton = document.getElementById("yes");
+    const noButton = document.getElementById("no");
+    const yesButton = document.getElementById("yes");
 
-        // Move the NO button whenever the mouse gets close
-        noButton.addEventListener("mouseenter", moveButton);
+    function moveButton() {
+        const buttonWidth = noButton.offsetWidth;
+        const buttonHeight = noButton.offsetHeight;
 
-        function moveButton() {
-            const buttonWidth = noButton.offsetWidth;
-            const buttonHeight = noButton.offsetHeight;
+        const padding = 20;
 
-            const maxX = window.innerWidth - buttonWidth - 20;
-            const maxY = window.innerHeight - buttonHeight - 20;
+        const maxX = window.innerWidth - buttonWidth - padding;
+        const maxY = window.innerHeight - buttonHeight - padding;
 
-            const randomX = Math.random() * maxX + 10;
-            const randomY = Math.random() * maxY + 10;
+        const randomX = Math.max(
+            padding,
+            Math.random() * maxX
+        );
 
-            noButton.style.left = randomX + "px";
-            noButton.style.top = randomY + "px";
-        }
+        const randomY = Math.max(
+            padding,
+            Math.random() * maxY
+        );
 
-        // YES button
-        yesButton.addEventListener("click", function () {
-            document.getElementById("question").style.display = "none";
-            document.getElementById("message").style.display = "block";
-        });
-    </script>
+        noButton.style.left = randomX + "px";
+        noButton.style.top = randomY + "px";
+    }
+
+    // PC mouse
+    noButton.addEventListener("mouseenter", moveButton);
+
+    // Mobile touch
+    noButton.addEventListener("touchstart", function(event) {
+        event.preventDefault();
+        moveButton();
+    }, { passive: false });
+
+    // Prevent clicking NO
+    noButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        moveButton();
+    });
+
+    // YES button
+    yesButton.addEventListener("click", function() {
+        document.getElementById("question").style.display = "none";
+        document.getElementById("message").style.display = "block";
+    });
+</script>
 
 </body>
 </html>
