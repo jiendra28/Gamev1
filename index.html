@@ -1,131 +1,348 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Very Important Question ❤️</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>I'm Sorry ❤️</title>
+<style>
+  :root{
+    --pink:#ff5c8a;
+    --deep:#c9184a;
+    --text:#3d0d1f;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(160deg,#ffe3ec 0%,#ffc2d4 45%,#ff9ebb 100%);
+    color:var(--text);
+    overflow:hidden;
+    position:relative;
+  }
 
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, sans-serif;
-            background: #ffe6f0;
-            overflow: hidden;
-        }
+  /* floating background hearts */
+  .bg-heart{
+    position:fixed;bottom:-40px;
+    font-size:22px;opacity:.35;
+    animation:floatUp linear infinite;
+    pointer-events:none;
+    user-select:none;
+  }
+  @keyframes floatUp{
+    to{transform:translateY(-110vh) rotate(360deg);opacity:0;}
+  }
 
-        .container {
-            text-align: center;
-        }
+  /* screens */
+  .screen{
+    position:fixed;inset:0;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:28px 22px;
+    text-align:center;
+    opacity:0;visibility:hidden;
+    transition:opacity .5s ease;
+    overflow-y:auto;
+  }
+  .screen.active{opacity:1;visibility:visible;}
 
-        h1 {
-            font-size: 40px;
-            color: #ff4d88;
-            margin-bottom: 40px;
-        }
+  h1{font-size:1.6rem;margin:0 0 14px;line-height:1.3;}
+  h2{font-size:1.25rem;margin:0 0 18px;font-weight:600;}
+  p{font-size:1.02rem;line-height:1.65;margin:0 0 14px;max-width:420px;}
 
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-        }
+  .btn{
+    border:none;border-radius:999px;
+    padding:15px 34px;font-size:1.05rem;font-weight:700;
+    background:var(--pink);color:#fff;cursor:pointer;
+    box-shadow:0 8px 22px rgba(201,24,74,.32);
+    transition:transform .15s ease,box-shadow .15s ease;
+    font-family:inherit;
+  }
+  .btn:active{transform:scale(.95);}
+  .btn.ghost{
+    background:#fff;color:var(--deep);
+    box-shadow:0 6px 18px rgba(201,24,74,.18);
+  }
 
-        button {
-            border: none;
-            padding: 15px 35px;
-            font-size: 20px;
-            border-radius: 12px;
-            cursor: pointer;
-        }
+  .btn-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center;}
 
-        #yes {
-            background: #ff4d88;
-            color: white;
-        }
+  /* stage for dodging buttons */
+  .dodge-stage{
+    position:relative;
+    width:100%;max-width:420px;height:190px;
+    margin-top:10px;
+  }
+  .dodge-stage .btn{position:absolute;transition:left .22s ease,top .22s ease,transform .2s ease;}
+  .dodge-stage .btn.yes{left:6%;top:52%;}
+  .dodge-stage .btn.no{right:6%;top:52%;}
 
-        #no {
-        background: #555;
-        color: white;
-        position: fixed;
-        touch-action: none;
-        user-select: none;
-        }
-        
-        #message {
-            display: none;
-            font-size: 30px;
-            color: #ff4d88;
-        }
-    </style>
+  /* apology cards */
+  .cards{display:flex;flex-direction:column;gap:12px;width:100%;max-width:400px;margin-bottom:22px;}
+  .card{
+    background:#fff;border-radius:18px;padding:16px 18px;
+    box-shadow:0 6px 20px rgba(201,24,74,.14);
+    cursor:pointer;
+    display:flex;align-items:center;gap:12px;
+    text-align:left;
+    transition:transform .18s ease;
+  }
+  .card:active{transform:scale(.97);}
+  .card .icon{font-size:1.4rem;flex-shrink:0;}
+  .card .label{font-weight:600;font-size:.98rem;}
+  .card .reveal{
+    display:none;font-size:.92rem;font-weight:400;
+    color:#7a3348;line-height:1.5;margin-top:4px;
+  }
+  .card.open .reveal{display:block;animation:fadeIn .4s ease;}
+  .card.open .label{color:var(--deep);}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  /* letter */
+  .letter{
+    background:#fff;border-radius:20px;
+    padding:26px 22px;max-width:440px;width:100%;
+    box-shadow:0 10px 32px rgba(201,24,74,.18);
+    text-align:left;
+  }
+  .letter p{
+    opacity:0;transform:translateY(10px);
+    animation:riseIn .8s ease forwards;
+    max-width:100%;
+  }
+  @keyframes riseIn{to{opacity:1;transform:none;}}
+  .signature{
+    text-align:right;font-style:italic;
+    color:var(--deep);margin-top:18px;font-size:1rem;
+  }
+
+  .hint{font-size:.85rem;opacity:.65;margin-top:14px;}
+
+  /* celebration hearts */
+  .burst{
+    position:fixed;font-size:26px;pointer-events:none;
+    animation:burst 1.8s ease-out forwards;
+    z-index:99;
+  }
+  @keyframes burst{
+    0%{transform:translate(0,0) scale(.4);opacity:1;}
+    100%{transform:translate(var(--dx),var(--dy)) scale(1.3);opacity:0;}
+  }
+
+  .big{font-size:3.2rem;margin-bottom:8px;animation:pulse 1.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+</style>
 </head>
-
 <body>
 
-    <div class="container" id="question">
-        <h1>Do you love me? ❤️</h1>
+<!-- ============ SCREEN 1: INTRO ============ -->
+<section class="screen active" id="s-intro">
+  <div class="big">💌</div>
+  <h1>Hey <span id="nameSlot">…</span></h1>
+  <p>I made you something. It's small, and it's dumb, and it's from me.</p>
+  <button class="btn" onclick="go('s-love')">Open it →</button>
+  <p class="hint">(Headphones optional. Feelings mandatory.)</p>
+</section>
 
-        <div class="buttons">
-            <button id="yes">YES ❤️</button>
-            <button id="no">NO 😭</button>
-        </div>
-    </div>
+<!-- ============ SCREEN 2: DO YOU LOVE ME ============ -->
+<section class="screen" id="s-love">
+  <h1>First, a very serious question.</h1>
+  <h2>Do you love me? ❤️</h2>
+  <div class="dodge-stage" id="stage1">
+    <button class="btn yes" onclick="go('s-cards')">YES</button>
+    <button class="btn ghost no" id="no1">NO</button>
+  </div>
+  <p class="hint" id="taunt1"></p>
+</section>
 
-    <div id="message">
-        <h1>I KNEW IT!!! ❤️🥰</h1>
-        <p>You can't escape me now 😏</p>
-    </div>
+<!-- ============ SCREEN 3: APOLOGY CARDS ============ -->
+<section class="screen" id="s-cards">
+  <h2>Okay. Now the actual point.</h2>
+  <p class="hint" style="margin-bottom:18px;">Tap each one.</p>
+  <div class="cards" id="cardList"></div>
+  <button class="btn" id="toLetter" style="display:none;" onclick="go('s-letter')">There's more →</button>
+</section>
 
-    <script>
-    const noButton = document.getElementById("no");
-    const yesButton = document.getElementById("yes");
+<!-- ============ SCREEN 4: THE LETTER ============ -->
+<section class="screen" id="s-letter">
+  <div class="letter" id="letterBox"></div>
+  <button class="btn" style="margin-top:22px;" onclick="go('s-forgive')">Okay… →</button>
+</section>
 
-    function moveButton() {
-        const buttonWidth = noButton.offsetWidth;
-        const buttonHeight = noButton.offsetHeight;
+<!-- ============ SCREEN 5: FORGIVE ME ============ -->
+<section class="screen" id="s-forgive">
+  <h1 id="forgiveQ">Will you forgive me?</h1>
+  <div class="dodge-stage" id="stage2">
+    <button class="btn yes" onclick="celebrate()">YES 🥹</button>
+    <button class="btn ghost no" id="no2">NO</button>
+  </div>
+  <p class="hint" id="taunt2"></p>
+</section>
 
-        const padding = 20;
+<!-- ============ SCREEN 6: ENDING ============ -->
+<section class="screen" id="s-end">
+  <div class="big">❤️</div>
+  <h1 id="endTitle">Thank you.</h1>
+  <p id="endMsg"></p>
+  <button class="btn ghost" onclick="celebrate()">One more hug 🤗</button>
+</section>
 
-        const maxX = window.innerWidth - buttonWidth - padding;
-        const maxY = window.innerHeight - buttonHeight - padding;
+<script>
+/* ============================================================
+   ⭐ EDIT EVERYTHING IN THIS BLOCK ⭐
+   Nothing below it needs to change.
+   ============================================================ */
+const CONFIG = {
 
-        const randomX = Math.max(
-            padding,
-            Math.random() * maxX
-        );
+  herName: "Bhotacheeeem",          // ← her name
+  yourName: "Handsome Jiendra",        // ← your name
 
-        const randomY = Math.max(
-            padding,
-            Math.random() * maxY
-        );
+  // Lines shown when she presses the dodging NO button
+  noTaunts: [
+    "Nice try 😌",
+    "That button doesn't work",
+    "Nope, not today",
+    "You're stuck with me",
+    "Wrong answer, try again"
+  ],
 
-        noButton.style.left = randomX + "px";
-        noButton.style.top = randomY + "px";
+  // The three apology cards
+  cards: [
+    { icon:"😔", label:"Sorry la, I didn't mean to cancel your plan",
+      reveal:"Yenneye manichurunga akka, I lupp u soo muchh. Accept this as an compensation plisssss" },
+    { icon:"🙏", label:"How much do I love you?",
+      reveal:"11/10" },
+    { icon:"💪", label:"What movie you nak tgk?",
+      reveal:"If you tak tau wat to watch, we can watch Jana Nayagan, I have it installed 20gb file" },
+    { icon:"❤️", label:"How much do I want to hug u?",
+      reveal:"I nak hug you sampai u mati" }
+  ],
+
+  // The letter. Each string = one paragraph that fades in.
+  letter: [
+    "Sorry kutty kunja, we will watch movie if i come early or tomorrow okieeee",
+    "I lupp u so muchh, pls dont fight with meeee, dont marah me, if u marah me i will sleep today with so much sadness",
+    "I LOVE YOUUUU 100000/100000",
+    "Ithuku melayum apology accept pannale, pregnancy test eduke kutitu po maathen paathuko. Love you my nigggaaaa",
+  ],
+
+  // Ending
+  endTitle: "You said yes.",
+  endMsg: "Romba Nandri da BHOTACHEEEEEEMMMM. PRESSS THE HUG BUTTON. SPAM LIKE U WANT TO BEAT ME"
+};
+/* ============================================================ */
+
+// ---------- helpers ----------
+const $ = (s) => document.querySelector(s);
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $('#' + id).classList.add('active');
+  $('#' + id).scrollTop = 0;
+}
+
+// ---------- background hearts ----------
+(function bgHearts(){
+  const glyphs = ['❤️','💕','💗','🩷','💖'];
+  setInterval(() => {
+    const h = document.createElement('div');
+    h.className = 'bg-heart';
+    h.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.animationDuration = (7 + Math.random()*6) + 's';
+    h.style.fontSize = (14 + Math.random()*16) + 'px';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 14000);
+  }, 700);
+})();
+
+// ---------- dodging NO button ----------
+function makeDodger(btn, stage, tauntEl){
+  let idx = 0;
+  const dodge = () => {
+    const sr = stage.getBoundingClientRect();
+    const br = btn.getBoundingClientRect();
+    const maxX = Math.max(0, sr.width  - br.width  - 8);
+    const maxY = Math.max(0, sr.height - br.height - 8);
+    btn.style.left = (Math.random()*maxX) + 'px';
+    btn.style.top  = (Math.random()*maxY) + 'px';
+    btn.style.right = 'auto';
+    if (tauntEl){
+      tauntEl.textContent = CONFIG.noTaunts[idx % CONFIG.noTaunts.length];
+      idx++;
     }
+  };
+  btn.addEventListener('mouseover', dodge);
+  btn.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(); }, {passive:false});
+  btn.addEventListener('click', (e) => { e.preventDefault(); dodge(); });
+}
 
-    // PC mouse
-    noButton.addEventListener("mouseenter", moveButton);
+// ---------- celebration ----------
+function celebrate(){
+  const glyphs = ['❤️','💖','💕','✨','🥹','🩷'];
+  for (let i = 0; i < 45; i++){
+    setTimeout(() => {
+      const h = document.createElement('div');
+      h.className = 'burst';
+      h.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+      h.style.left = (45 + Math.random()*10) + 'vw';
+      h.style.top  = (45 + Math.random()*10) + 'vh';
+      h.style.setProperty('--dx', (Math.random()*600 - 300) + 'px');
+      h.style.setProperty('--dy', (Math.random()*-500 - 80) + 'px');
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 1900);
+    }, i * 30);
+  }
+  setTimeout(() => {
+    $('#endTitle').textContent = CONFIG.endTitle;
+    $('#endMsg').textContent   = CONFIG.endMsg;
+    go('s-end');
+  }, 900);
+}
 
-    // Mobile touch
-    noButton.addEventListener("touchstart", function(event) {
-        event.preventDefault();
-        moveButton();
-    }, { passive: false });
+// ---------- build the page ----------
+(function init(){
+  // name
+  $('#nameSlot').textContent = CONFIG.herName;
 
-    // Prevent clicking NO
-    noButton.addEventListener("click", function(event) {
-        event.preventDefault();
-        moveButton();
+  // dodging buttons
+  makeDodger($('#no1'), $('#stage1'), $('#taunt1'));
+  makeDodger($('#no2'), $('#stage2'), $('#taunt2'));
+
+  // apology cards
+  const list = $('#cardList');
+  let opened = 0;
+  CONFIG.cards.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = `
+      <span class="icon">${c.icon}</span>
+      <div>
+        <div class="label">${c.label}</div>
+        <div class="reveal">${c.reveal}</div>
+      </div>`;
+    el.addEventListener('click', () => {
+      if (el.classList.contains('open')) return;
+      el.classList.add('open');
+      opened++;
+      if (opened === CONFIG.cards.length) $('#toLetter').style.display = 'inline-block';
     });
+    list.appendChild(el);
+  });
 
-    // YES button
-    yesButton.addEventListener("click", function() {
-        document.getElementById("question").style.display = "none";
-        document.getElementById("message").style.display = "block";
-    });
+  // letter paragraphs with staggered fade
+  const box = $('#letterBox');
+  CONFIG.letter.forEach((para, i) => {
+    const p = document.createElement('p');
+    p.textContent = para;
+    p.style.animationDelay = (i * 0.9) + 's';
+    box.appendChild(p);
+  });
+  const sig = document.createElement('div');
+  sig.className = 'signature';
+  sig.textContent = '— ' + CONFIG.yourName;
+  sig.style.opacity = 0;
+  sig.style.animation = `riseIn .8s ease ${CONFIG.letter.length * 0.9}s forwards`;
+  box.appendChild(sig);
+})();
 </script>
-
 </body>
 </html>
